@@ -3,11 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My GitHub Pages Site</title>
+    <title>"Thoughts Shared, Lessons Cherished"</title>
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --bg: #050a10;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 50% 50%, #101a25 0%, #050a10 100%);
+            color: white;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Futuristic Glass Container */
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            position: relative;
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), transparent, var(--primary));
+            border-radius: 22px;
+            z-index: -1;
+            opacity: 0.2;
+        }
+
+        h1 {
+            font-weight: 200;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+        }
+
+        /* Document List Styling */
+        .doc-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .doc-item {
+            margin: 15px 0;
+            transition: 0.3s;
+        }
+
+        .doc-link {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border: 1px solid transparent;
+            transition: 0.3s;
+        }
+
+        .doc-link:hover {
+            background: rgba(0, 242, 255, 0.1);
+            border-color: var(--primary);
+            color: white;
+            transform: translateX(5px);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+        }
+
+        .doc-link span {
+            font-size: 0.8em;
+            color: var(--primary);
+            opacity: 0.6;
+        }
+    </style>
 </head>
 <body>
-    <p>Welcome to my website hosted on GitHub Pages.</p>
-    <a href="ondevice-ai-tech-stack-overview.html">On device aiml tech stack overview </a>
+
+    <div class="glass-panel">
+        <h1>Archive_01</h1>
+        <ul class="doc-list">
+            <!-- Add your documents here -->
+            <li class="doc-item">
+                <a href="ondevice-ai-tech-stack-overview" class="doc-link">
+                    ODML tech stack <span>View</span>
+                </a>
+            </li>
+        </ul>
+    </div>
 
 </body>
 </html>
