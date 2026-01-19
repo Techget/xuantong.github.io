@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>The Full Stack of On-Device AI (2026)</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+
+
+    <style>
+
+        :root {
+
+            --neon-cyan: #00fff2;
+
+            --neon-blue: #4d4dff;
+
+            --dark-bg: #030512;
+
+            --glass-bg: rgba(10, 20, 40, 0.75);
+
+            --border-glow: 0 0 15px rgba(0, 255, 242, 0.4);
+
+            --text-primary: #e6fafa;
+
+            --text-secondary: #a0c0d0;
+
+        }
+
+
+
+        body, html {
+
+            margin: 0;
+
+            padding: 0;
+
+            height: 100%;
+
+            font-family: 'Inter', sans-serif;
+
+            background-color: var(--dark-bg);
+
+            color: var(--text-primary);
+
+            overflow-x: hidden;
+
+        }
+
+
+
+        /* --- 3D Canvas Background --- */
+
+        #bg-canvas {
+
+            position: fixed;
+
+            top: 0;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 100%;
+
+            z-index: -1;
+
+        }
+
+
+
+        /* --- Main Container Style --- */
+
+        .container {
+
+            max-width: 1200px;
+
+            margin: 0 auto;
+
+            padding: 40px 20px;
+
+            position: relative;
+
+            z-index: 10;
+
+        }
+
+
+
+        h1 {
+
+            font-size: 3.5rem;
+
+            font-weight: 700;
+
+            margin-bottom: 1rem;
+
+            background: linear-gradient(90deg, var(--text-primary), var(--neon-cyan));
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            text-shadow: 0 0 30px rgba(0, 255, 242, 0.3);
+
+        }
+
+
+
+        h2 {
+
+            font-size: 2rem;
+
+            border-bottom: 2px solid var(--neon-blue);
+
+            padding-bottom: 10px;
+
+            margin-top: 3rem;
+
+            color: var(--neon-cyan);
+
+        }
+
+
+
+        h3 {
+
+            font-size: 1.5rem;
+
+            color: var(--text-primary);
+
+            margin-top: 2rem;
+
+        }
+
+
+
+        p {
+
+            line-height: 1.7;
+
+            color: var(--text-secondary);
+
+            font-size: 1.1rem;
+
+            max-width: 800px;
+
+        }
+
+
+
+        /* --- Glassmorphism Panels --- */
+
+        .glass-panel {
+
+            background: var(--glass-bg);
+
+            backdrop-filter: blur(12px);
+
+            -webkit-backdrop-filter: blur(12px);
+
+            border: 1px solid rgba(0, 255, 242, 0.2);
+
+            box-shadow: var(--border-glow);
+
+            border-radius: 12px;
+
+            padding: 30px;
+
+            margin-bottom: 30px;
+
+        }
+
+
+
+        /* --- Interactive Stack Visualization (The Core VIsual) --- */
+
+        .stack-viz-container {
+
+            display: flex;
+
+            gap: 30px;
+
+            align-items: flex-start;
+
+            margin: 40px 0;
+
+        }
+
+
+
+        .stack-layers {
+
+            flex: 1;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+
+            max-width: 500px;
+
+        }
+
+
+
+        .layer-block {
+
+            padding: 15px 20px;
+
+            background: linear-gradient(90deg, rgba(0, 255, 242, 0.1), rgba(77, 77, 255, 0.1));
+
+            border: 1px solid rgba(0, 255, 242, 0.3);
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            transition: all 0.3s ease;
+
+            position: relative;
+
+            font-family: 'Roboto Mono', monospace;
+
+            font-weight: 700;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+        }
+
+
+
+        .layer-block:hover, .layer-block.active {
+
+            background: linear-gradient(90deg, rgba(0, 255, 242, 0.3), rgba(77, 77, 255, 0.3));
+
+            box-shadow: 0 0 20px rgba(0, 255, 242, 0.5);
+
+            transform: scale(1.02);
+
+            border-color: var(--neon-cyan);
+
+        }
+
+
+
+        .layer-number {
+
+            color: var(--neon-cyan);
+
+            margin-right: 15px;
+
+        }
+
+
+
+        /* The "Compilation Gap" Visual Separator */
+
+        .gap-separator {
+
+            height: 40px;
+
+            background: repeating-linear-gradient(
+
+                45deg,
+
+                transparent,
+
+                transparent 10px,
+
+                rgba(255, 50, 50, 0.2) 10px,
+
+                rgba(255, 50, 50, 0.2) 20px
+
+            );
+
+            border-top: 2px dashed rgba(255, 80, 80, 0.7);
+
+            border-bottom: 2px dashed rgba(255, 80, 80, 0.7);
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-family: 'Roboto Mono', monospace;
+
+            color: #ff8080;
+
+            font-size: 0.9rem;
+
+            text-transform: uppercase;
+
+            letter-spacing: 2px;
+
+            position: relative;
+
+        }
+
+
+
+        /* The Detail Panel that updates on hover */
+
+        .stack-detail-panel {
+
+            flex: 1;
+
+            min-height: 400px;
+
+            /* glass panel styles applied via class */
+
+        }
+
+
+
+        .detail-content {
+
+            opacity: 1;
+
+            transition: opacity 0.3s ease;
+
+        }
+
+        .detail-content.hidden {
+
+            opacity: 0;
+
+        }
+
+
+
+        .detail-label {
+
+            font-family: 'Roboto Mono', monospace;
+
+            font-size: 0.9rem;
+
+            color: var(--neon-cyan);
+
+            text-transform: uppercase;
+
+            margin-bottom: 8px;
+
+            margin-top: 20px;
+
+            display: block;
+
+        }
+
+
+
+        .detail-value {
+
+            font-size: 1.1rem;
+
+            color: var(--text-primary);
+
+            margin-bottom: 15px;
+
+        }
+
+        
+
+        .intent-quote {
+
+            font-style: italic;
+
+            border-left: 3px solid var(--neon-cyan);
+
+            padding-left: 15px;
+
+            color: var(--text-secondary);
+
+            background: rgba(0,255,242,0.05);
+
+            padding: 15px;
+
+            margin-top: 10px;
+
+        }
+
+
+
+        /* --- Comparison Table Styles --- */
+
+        .comparison-table {
+
+            width: 100%;
+
+            border-collapse: separate;
+
+            border-spacing: 0;
+
+            margin-top: 30px;
+
+            font-family: 'Roboto Mono', monospace;
+
+        }
+
+
+
+        .comparison-table th, .comparison-table td {
+
+            padding: 15px;
+
+            text-align: left;
+
+            border-bottom: 1px solid rgba(0, 255, 242, 0.2);
+
+        }
+
+
+
+        .comparison-table th {
+
+            color: var(--neon-cyan);
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+
+            background: rgba(0, 255, 242, 0.1);
+
+        }
+
+
+
+        .comparison-table tr:hover td {
+
+            background: rgba(77, 77, 255, 0.1);
+
+        }
+
+
+
+        .table-role {
+
+            color: var(--text-secondary);
+
+            font-weight: bold;
+
+        }
+
+        .sub-text {
+
+            display: block;
+
+            font-size: 0.8rem;
+
+            color: var(--text-secondary);
+
+            font-family: 'Inter', sans-serif;
+
+            margin-top: 4px;
+
+        }
+
+
+
+        /* --- Responsive adjustments --- */
+
+        @media (max-width: 900px) {
+
+            .stack-viz-container {
+
+                flex-direction: column;
+
+            }
+
+            .stack-layers, .stack-detail-panel {
+
+                max-width: 100%;
+
+                width: 100%;
+
+            }
+
+            h1 { font-size: 2.5rem; }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <canvas id="bg-canvas"></canvas>
+
+
+
+    <div class="container">
+
+        <header>
+
+            <h1>The Full Stack of On-Device AI:<br>From Silicon to Screen</h1>
+
+            <p class="glass-panel" style="display: inline-block;">
+
+                In 2026, the days of simply "importing a model" are over. The on-device AI ecosystem has matured into a deep, vertical hierarchy. To survive, we need a shared mental model connecting the silicon in our pockets to the pixels on our screens.
+
+            </p>
+
+        </header>
+
+
+
+        <section>
+
+            <h2>The Unified On-Device Stack (2026)</h2>
+
+            <p>Hover over the layers below to explore the standard separation of concerns for local AI.</p>
+
+            
+
+            <div class="stack-viz-container">
+
+                <div class="stack-layers" id="layerStack">
+
+                    <div class="layer-block" data-layer="6"><span class="layer-number">L6</span> Orchestration</div>
+
+                    <div class="layer-block" data-layer="5"><span class="layer-number">L5</span> Interface</div>
+
+                    <div class="layer-block" data-layer="4"><span class="layer-number">L4</span> Framework</div>
+
+                    
+
+                    <div class="gap-separator" id="gapSeparator">
+
+                        ⚠️ The Compilation Gap ⚠️
+
+                    </div>
+
+
+
+                    <div class="layer-block" data-layer="3"><span class="layer-number">L3</span> Inference Engine</div>
+
+                    <div class="layer-block" data-layer="2"><span class="layer-number">L2</span> Representation</div>
+
+                    <div class="layer-block" data-layer="1"><span class="layer-number">L1</span> Tensor Kernels</div>
+
+                    <div class="layer-block" data-layer="0"><span class="layer-number">L0</span> Hardware Backend</div>
+
+                </div>
+
+
+
+                <div class="glass-panel stack-detail-panel">
+
+                    <div id="detailContent" class="detail-content">
+
+                        <h3 id="detailTitle" style="margin-top: 0; color: var(--neon-cyan);">Select a Layer</h3>
+
+                        <span class="detail-label">Functional Role</span>
+
+                        <div class="detail-value" id="detailRole">Hover over the stack elements to see details here.</div>
+
+                        
+
+                        <span class="detail-label">Key Examples (2026)</span>
+
+                        <div class="detail-value" id="detailExamples">-</div>
+
+
+
+                        <span class="detail-label">Interaction</span>
+
+                        <div class="detail-value" id="detailInteraction">-</div>
+
+                        
+
+                        <span class="detail-label">Developer's Intent</span>
+
+                        <div class="intent-quote" id="detailIntent">-</div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <section class="glass-panel">
+
+            <h3>The "Great Divide" & The Compilation Gap</h3>
+
+            <p>As the stack has deepened, a natural split has occurred.</p>
+
+            <ul>
+
+                <li><strong>ML Engineers (Layers 0–3)</strong> live "below the line," focusing on throughput, thermal throttling, and quantization.</li>
+
+                <li><strong>AI App Engineers (Layers 4–6)</strong> live "above the line," focusing on reasoning, latency, and user experience.</li>
+
+            </ul>
+
+            <p>
+
+                The critical friction point is the jump from <strong>L4 (Framework)</strong> to <strong>L3 (Inference Engine)</strong>. While upper layers are portable, the bottom layers are rigid. A PyTorch model cannot simply run on a mobile chip; it must be explicitly converted and quantized into a specialized format (L2) that the local engine (L3) can understand.
+
+            </p>
+
+        </section>
+
+
+
+        <section>
+
+            <h2>A Tale of Two Stacks: Hacker vs. Pixel</h2>
+
+            <p>Two different approaches to running the same 3B parameter model on a device.</p>
+
+            
+
+            <div class="glass-panel" style="padding: 10px 30px;">
+
+                <table class="comparison-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Layer</th>
+
+                            <th>Role</th>
+
+                            <th>The "Hacker" Stack<br><span class="sub-text">(Open Source)</span></th>
+
+                            <th>The "Pixel" Stack<br><span class="sub-text">(Google / Android)</span></th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>L5</td>
+
+                            <td class="table-role">Serving</td>
+
+                            <td>**Ollama**<span class="sub-text">Localhost Server</span></td>
+
+                            <td>**MediaPipe**<span class="sub-text">Android API</span></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>L3</td>
+
+                            <td class="table-role">Engine</td>
+
+                            <td>**llama.cpp**<span class="sub-text">Universal Solver</span></td>
+
+                            <td>**LiteRT**<span class="sub-text">Formerly TFLite</span></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>L2</td>
+
+                            <td class="table-role">Format</td>
+
+                            <td>**.GGUF**<span class="sub-text">The "MP3" of AI</span></td>
+
+                            <td>**.tflite / .litertlm**<span class="sub-text">FlatBuffer optimized</span></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>L1</td>
+
+                            <td class="table-role">Kernels</td>
+
+                            <td>**ggml**<span class="sub-text">CPU optimized math</span></td>
+
+                            <td>**Darwinn**<span class="sub-text">TPU Compiler & Driver</span></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>L0</td>
+
+                            <td class="table-role">Silicon</td>
+
+                            <td>Consumer GPU / CPU</td>
+
+                            <td>**Edge TPU**<span class="sub-text">Pixel Neural Core</span></td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <footer style="margin: 60px 0; text-align: center;">
+
+            <p class="glass-panel" style="display: inline-block; font-size: 1.2rem;">
+
+                The best engineers in 2026 know how to build a product at the top, but know when to drop down to Layer 2 to debug a quantization error. <br><br>
+
+                <strong style="color: var(--neon-cyan);">What layer are you building in today?</strong>
+
+            </p>
+
+        </footer>
+
+
+
+    </div>
+
+
+
+    <script>
+
+        // ==========================================
+
+        // PART 1: THREE.JS BACKGROUND ANIMATION
+
+        // ==========================================
+
+        const canvas = document.querySelector('#bg-canvas');
+
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+
+
+        const scene = new THREE.Scene();
+
+        // Fog to create depth into the void
+
+        scene.fog = new THREE.FogExp2(0x030512, 0.002);
+
+
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        camera.position.z = 30;
+
+        camera.position.y = 10;
+
+        camera.rotation.x = -0.3;
+
+
+
+        // Create undulating layers
+
+        const planeGeometry = new THREE.PlaneGeometry(150, 150, 64, 64);
+
+        
+
+        // Material for the translucent, glowing layers
+
+        const materialCyan = new THREE.MeshBasicMaterial({
+
+            color: 0x00fff2,
+
+            wireframe: true,
+
+            transparent: true,
+
+            opacity: 0.15,
+
+            side: THREE.DoubleSide,
+
+            blending: THREE.AdditiveBlending
+
+        });
+
+
+
+         const materialBlue = new THREE.MeshBasicMaterial({
+
+            color: 0x4d4dff,
+
+            wireframe: true,
+
+            transparent: true,
+
+            opacity: 0.1,
+
+            side: THREE.DoubleSide,
+
+            blending: THREE.AdditiveBlending
+
+        });
+
+
+
+        const plane1 = new THREE.Mesh(planeGeometry, materialCyan);
+
+        plane1.rotation.x = -Math.PI / 2;
+
+        plane1.position.y = -5;
+
+        scene.add(plane1);
+
+
+
+        const plane2 = new THREE.Mesh(planeGeometry, materialBlue);
+
+        plane2.rotation.x = -Math.PI / 2;
+
+        plane2.position.y = -12;
+
+        scene.add(plane2);
+
+
+
+        const plane3 = new THREE.Mesh(planeGeometry, materialCyan);
+
+        plane3.rotation.x = -Math.PI / 2;
+
+        plane3.position.y = 2;
+
+        scene.add(plane3);
+
+
+
+        // Store initial vertex positions for animation
+
+        const posAttribute1 = plane1.geometry.attributes.position;
+
+        const startPositions1 = posAttribute1.array.slice();
+
+        const posAttribute2 = plane2.geometry.attributes.position;
+
+        const startPositions2 = posAttribute2.array.slice();
+
+
+
+        let time = 0;
+
+
+
+        function animate() {
+
+            requestAnimationFrame(animate);
+
+            time += 0.005;
+
+
+
+            // Animate Plane 1 (Cyan lower)
+
+            for(let i = 0; i < posAttribute1.count; i++) {
+
+                const x = startPositions1[i * 3];
+
+                const y = startPositions1[i * 3 + 1];
+
+                // Z in plane geometry corresponds to height when rotated
+
+                posAttribute1.setZ(i, Math.sin(x * 0.1 + time) * 3 + Math.cos(y * 0.1 + time * 1.5) * 2);
+
+            }
+
+            posAttribute1.needsUpdate = true;
+
+
+
+             // Animate Plane 2 (Blue lowest)
+
+             for(let i = 0; i < posAttribute2.count; i++) {
+
+                const x = startPositions2[i * 3];
+
+                const y = startPositions2[i * 3 + 1];
+
+                posAttribute2.setZ(i, Math.sin(x * 0.05 - time) * 4 + Math.cos(y * 0.08 + time) * 3);
+
+            }
+
+            posAttribute2.needsUpdate = true;
+
+
+
+            // Slowly rotate the third plane
+
+            plane3.rotation.z += 0.001;
+
+
+
+            renderer.render(scene, camera);
+
+        }
+
+
+
+        animate();
+
+
+
+        // Handle resize
+
+        window.addEventListener('resize', () => {
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+        });
+
+
+
+
+
+        // ==========================================
+
+        // PART 2: INTERACTIVE DATA FOR THE STACK
+
+        // ==========================================
+
+        
+
+        // Data Source corresponding to the article table
+
+        const layerData = {
+
+            "6": {
+
+                title: "L6: Orchestration",
+
+                role: "Logic & Agentic Workflows",
+
+                examples: "LangChain, LlamaIndex, AutoGen",
+
+                interaction: "Calls the Interface API to feed model outputs into external tools.",
+
+                intent: "I want to build an autonomous agent that can browse the web and save files."
+
+            },
+
+            "5": {
+
+                title: "L5: Interface",
+
+                role: "Model Serving & API",
+
+                examples: "Ollama, MediaPipe, LM Studio",
+
+                interaction: "Wraps the Engine in a standard API (REST/RPC) or GUI.",
+
+                intent: "I need a ready-to-use local server so my app can 'talk' to an LLM."
+
+            },
+
+            "4": {
+
+                title: "L4: Framework",
+
+                role: "Training & Architecture",
+
+                examples: "PyTorch, JAX, TensorFlow",
+
+                interaction: "The source where models are defined and trained.",
+
+                intent: "I want to fine-tune a model on my own dataset or research a new architecture."
+
+            },
+
+            "3": {
+
+                title: "L3: Inference Engine",
+
+                role: "Execution & Speed",
+
+                examples: "llama.cpp, LiteRT (Google), ONNX Runtime",
+
+                interaction: "Loads the weight files and orchestrates the token generation.",
+
+                intent: "I want to run this model with maximum speed and minimum RAM usage."
+
+            },
+
+            "2": {
+
+                title: "L2: Representation",
+
+                role: "Serialization & Format",
+
+                examples: "GGUF, .tflite / .litertlm, Safetensors",
+
+                interaction: "The Bridge. A compressed, optimized blueprint the Engine reads.",
+
+                intent: "I need to convert my heavy PyTorch model into a lightweight format for mobile."
+
+            },
+
+            "1": {
+
+                title: "L1: Tensor Kernels",
+
+                role: "Math Operations",
+
+                examples: "ggml, Darwinn (TPU), XNNPACK",
+
+                interaction: "Low-level C++/Assembly code for matrix multiplication.",
+
+                intent: "I need to optimize the low-level math specifically for ARM or x86 CPUs."
+
+            },
+
+            "0": {
+
+                title: "L0: Hardware Backend",
+
+                role: "Compute Backend",
+
+                examples: "Edge TPU, CUDA (NVIDIA), Metal (Apple)",
+
+                interaction: "The driver-level language that talks directly to the silicon.",
+
+                intent: "I need to ensure the math operations are executed directly on the GPU cores."
+
+            }
+
+        };
+
+
+
+        // DOM Elements used for interaction
+
+        const layerBlocks = document.querySelectorAll('.layer-block');
+
+        const detailContent = document.getElementById('detailContent');
+
+        const detailTitle = document.getElementById('detailTitle');
+
+        const detailRole = document.getElementById('detailRole');
+
+        const detailExamples = document.getElementById('detailExamples');
+
+        const detailInteraction = document.getElementById('detailInteraction');
+
+        const detailIntent = document.getElementById('detailIntent');
+
+        const gapSeparator = document.getElementById('gapSeparator');
+
+
+
+        // Function to update the detail panel
+
+        function updateDetails(layerId) {
+
+            const data = layerData[layerId];
+
+            
+
+            // Simple fade effect
+
+            detailContent.classList.add('hidden');
+
+            
+
+            setTimeout(() => {
+
+                detailTitle.textContent = data.title;
+
+                detailRole.textContent = data.role;
+
+                detailExamples.textContent = data.examples;
+
+                detailInteraction.textContent = data.interaction;
+
+                detailIntent.textContent = `"${data.intent}"`;
+
+                detailContent.classList.remove('hidden');
+
+            }, 200);
+
+            
+
+            // Highlight active block
+
+            layerBlocks.forEach(block => block.classList.remove('active'));
+
+            document.querySelector(`[data-layer="${layerId}"]`).classList.add('active');
+
+
+
+            // Highlight gap separator if hovering near it (L3 or L4)
+
+            if(layerId === '3' || layerId === '4') {
+
+                 gapSeparator.style.borderColor = "var(--neon-cyan)";
+
+                 gapSeparator.style.color = "var(--neon-cyan)";
+
+                 gapSeparator.style.background = "rgba(0, 255, 242, 0.1)";
+
+            } else {
+
+                 gapSeparator.style.borderColor = "";
+
+                 gapSeparator.style.color = "";
+
+                 gapSeparator.style.background = "";
+
+            }
+
+        }
+
+
+
+        // Event Listeners for hover
+
+        layerBlocks.forEach(block => {
+
+            block.addEventListener('mouseenter', () => {
+
+                const layerId = block.getAttribute('data-layer');
+
+                updateDetails(layerId);
+
+            });
+
+        });
+
+
+
+        // Initialize with Layer 6 active
+
+        updateDetails("6");
+
+
+
+    </script>
+
+</body>
+
+</html>
