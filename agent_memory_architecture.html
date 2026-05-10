@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Memory Management Architecture</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #00fff2;
+            --dark-bg: #030512;
+            --glass-bg: rgba(10, 20, 40, 0.75);
+            --text-primary: #e6fafa;
+            --text-secondary: #a0c0d0;
+        }
+        body {
+            background-color: var(--dark-bg);
+            background-image: radial-gradient(circle at 50% 50%, #101a25 0%, #050a10 100%);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 255, 242, 0.2);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 0 15px rgba(0, 255, 242, 0.1);
+        }
+        h1, h2, h3 { color: var(--neon-cyan); }
+        a { color: var(--neon-cyan); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code { background: rgba(0, 255, 242, 0.1); padding: 2px 6px; border-radius: 4px; color: #ffeb3b; }
+        pre { background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; overflow-x: auto; }
+        pre code { background: none; color: inherit; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-link">← Back to Archive</a>
+        <hr>
+<h2>name: Agent Memory Architecture Thoughts
+description: Mental model for agent memory management, split into Generation and Retrieval. Read when optimizing context windows or building new memory structures.
+tags: [memory, architecture, progressive-disclosure]</h2>
+<h1>Agent Memory Management Architecture</h1>
+<p><em>Captured on: 2026-04-05</em></p>
+<h2>Summary</h2>
+<p>Memory management for agents must be split into Memory Generation (Session vs. Lifetime) and Memory Retrieval. Because token limits exist, retrieval must use progressive disclosure, which requires Generation to write highly structured, hierarchical data.</p>
+<h2>1. Memory Generation</h2>
+<p>This phase is split into two scopes:</p>
+<ul>
+<li><strong>Session-level memory generation:</strong> Fast, transient, localized to the current task.</li>
+<li><strong>Lifetime memory generation:</strong> Persistent, curated, long-term knowledge.</li>
+</ul>
+<p><strong>Constraints &amp; Triggers:</strong>
+Generation is bounded by several factors:</p>
+<ul>
+<li><strong>Context window limits:</strong> Determining what fits before compression is needed.</li>
+<li><strong>Update cadence (frequency):</strong> When do we trigger an update? (e.g., end of session, heartbeat, explicit user command).</li>
+<li><strong>Signal-to-Noise Ratio (SNR):</strong> Filtering out raw chat logs to keep only high-value insights.</li>
+<li><strong>User Intent Detection:</strong> Does the user want this remembered, or is it an implicit architectural learning?</li>
+</ul>
+<h2>2. Memory Retrieval</h2>
+<p>Retrieval must be highly structured due to token consumption and context length limits.</p>
+<ul>
+<li><strong>Progressive Disclosure:</strong> Retrieval should be hierarchical. Do not load the entire memory bank at once. Load high-level indices first, and progressively retrieve deeper layers only when the task demands it.</li>
+<li><strong>Dependency on Generation:</strong> For Progressive Disclosure to work during retrieval, the <em>Memory Generation</em> phase must write data in a highly structured format.</li>
+</ul>
+<h2>Vertical vs. General Purpose Application</h2>
+<ul>
+<li><strong>Vertical-Specific (e.g., Coding):</strong> Applying this model to a specific vertical is tractable. The boundaries of what is &quot;important&quot; to generate and retrieve are well-defined.</li>
+<li><strong>General Purpose (e.g., OpenClaw):</strong> Applying this broadly across a general-purpose agent is significantly harder because the context and intent vary wildly across interactions.</li>
+</ul>
+
+    </div>
+</body>
+</html>
