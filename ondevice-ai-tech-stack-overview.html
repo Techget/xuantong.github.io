@@ -310,8 +310,8 @@
         </section>
 
         <section>
-            <h2>A Tale of Two Stacks: Hacker vs. Pixel</h2>
-            <p>In 2026, the divergence is clear. The "Hacker" stack prioritizes portability and control, while the "Pixel" stack leverages extreme vertical integration through system-level daemons like <strong>Android AICore</strong>.</p>
+            <h2>A Tale of Two Stacks: Cross-Platform vs. Pixel</h2>
+            <p>In 2026, the divergence is clear. The "Cross-Platform" stack (centered around ONNX) prioritizes portability and broad hardware support, while the "Pixel" stack leverages extreme vertical integration through system-level daemons like <strong>Android AICore</strong>.</p>
             
             <div class="glass-panel" style="padding: 10px 30px;">
                 <table class="comparison-table">
@@ -319,7 +319,7 @@
                         <tr>
                             <th>Layer</th>
                             <th>Role</th>
-                            <th>The "Hacker" Stack<br><span class="sub-text">(Open Source)</span></th>
+                            <th>The "Cross-Platform" Stack<br><span class="sub-text">(ONNX Ecosystem)</span></th>
                             <th>The "Pixel" Stack<br><span class="sub-text">(Google / Android)</span></th>
                         </tr>
                     </thead>
@@ -327,31 +327,31 @@
                         <tr>
                             <td>L5</td>
                             <td class="table-role">Serving</td>
-                            <td>**Ollama / Localhost**<span class="sub-text">Explicit server bundle</span></td>
+                            <td>**ORT Server / Olive**<span class="sub-text">Microsoft-backed serving</span></td>
                             <td>**MediaPipe / AICore**<span class="sub-text">System-level AI Service</span></td>
                         </tr>
                         <tr>
                             <td>L3</td>
                             <td class="table-role">Engine</td>
-                            <td>**llama.cpp / ExecuTorch**<span class="sub-text">Portable inference</span></td>
+                            <td>**ONNX Runtime (ORT)**<span class="sub-text">Cross-platform solver</span></td>
                             <td>**LiteRT / AICore**<span class="sub-text">TPU-optimized runtime</span></td>
                         </tr>
                         <tr>
                             <td>L2</td>
                             <td class="table-role">Format</td>
-                            <td>**.GGUF**<span class="sub-text">The "MP3" of LLMs</span></td>
+                            <td>**.onnx**<span class="sub-text">Open Protobuf format</span></td>
                             <td>**.litertlm / .tflite**<span class="sub-text">FlatBuffer optimized</span></td>
                         </tr>
                         <tr>
                             <td>L1</td>
                             <td class="table-role">Kernels</td>
-                            <td>**ggml**<span class="sub-text">CPU/Vulkan math</span></td>
+                            <td>**DirectML / XNNPACK**<span class="sub-text">Hardware EPs</span></td>
                             <td>**Darwinn**<span class="sub-text">TPU Compiler & Driver</span></td>
                         </tr>
                         <tr>
                             <td>L0</td>
                             <td class="table-role">Silicon</td>
-                            <td>Consumer GPU / CPU</td>
+                            <td>NPU / GPU / CPU</td>
                             <td>**Edge TPU**<span class="sub-text">Pixel Neural Core</span></td>
                         </tr>
                     </tbody>
@@ -481,42 +481,42 @@
             "5": {
                 title: "L5: Interface",
                 role: "Model Serving & API",
-                examples: "Ollama, MediaPipe, Android AICore",
+                examples: "ONNX Runtime Server, Android AICore",
                 interaction: "Wraps the Engine in a standard API (REST/RPC) or system-level daemon.",
                 intent: "I need a ready-to-use local server or system service so my app can 'talk' to an LLM."
             },
             "4": {
                 title: "L4: Framework",
                 role: "Training & Architecture",
-                examples: "PyTorch, JAX, TensorFlow, Google AI Edge SDK",
+                examples: "PyTorch, Microsoft Olive, Google AI Edge SDK",
                 interaction: "The source where models are defined, trained, or converted.",
                 intent: "I want to fine-tune a model on my own dataset or prepare a model for deployment."
             },
             "3": {
                 title: "L3: Inference Engine",
                 role: "Execution & Speed",
-                examples: "llama.cpp, LiteRT (formerly TFLite), ExecuTorch",
+                examples: "ONNX Runtime (ORT), LiteRT (formerly TFLite)",
                 interaction: "Loads the weight files and orchestrates token generation or tensor execution.",
                 intent: "I want to run this model with maximum speed and minimum memory footprint."
             },
             "2": {
                 title: "L2: Representation",
                 role: "Serialization & Format",
-                examples: "GGUF, .tflite / .litertlm, Safetensors",
+                examples: ".onnx, .tflite / .litertlm, GGUF",
                 interaction: "The Bridge. A compressed, optimized blueprint the Engine reads.",
                 intent: "I need to convert my heavy PyTorch model into a lightweight format for mobile."
             },
             "1": {
                 title: "L1: Tensor Kernels",
                 role: "Math Operations",
-                examples: "ggml, Darwinn (TPU), XNNPACK",
+                examples: "DirectML, Darwinn (TPU), XNNPACK",
                 interaction: "Low-level C++/Assembly code for matrix multiplication.",
                 intent: "I need to optimize the low-level math specifically for ARM or x86 CPUs."
             },
             "0": {
                 title: "L0: Hardware Backend",
                 role: "Compute Backend",
-                examples: "Edge TPU, CUDA (NVIDIA), Metal (Apple)",
+                examples: "CUDA, Edge TPU, Metal (Apple)",
                 interaction: "The driver-level language that talks directly to the silicon.",
                 intent: "I need to ensure the math operations are executed directly on the GPU cores."
             }
